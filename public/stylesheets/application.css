@@ -18,7 +18,7 @@ body {
   margin-bottom: 15px;
 }
 
-#form-document input {
+#form-file input {
   font-size: 20px;
   font-style: italic;
   border: 1px solid gray;
@@ -26,23 +26,23 @@ body {
   box-shadow: 0px 0px 10px #CCC;
 }
 
-#form-document input.url-field { width: 275px; }
+#form-file input.url-field { width: 275px; }
 
-#documents {
+#files {
   border-top: 1px solid gray;
   text-align: left;
   margin-top: 18px;
   padding: 10px 5px;
 }
 
-.document .field {
+.file .field {
   font-size: 22px;
   font-style: italic;
 }
 
-.document .number-field { margin-right: 5px; }
+.file .number-field { margin-right: 5px; }
 
-.document .status-field { 
+.file .status-field { 
   float: right;
   font-weight: bold;
   color: green; 

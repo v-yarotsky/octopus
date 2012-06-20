@@ -3,13 +3,13 @@ $(function() {
   
   Files = Backbone.Collection.extend({
     model: File,
-    url: '/documents'
+    url: '/files'
   })
   
-  var TaskView = Backbone.View.extend({
+  var FileView = Backbone.View.extend({
     tagName: 'div',
-    className: 'document',
-    template: _.template($('#document-template').html()),
+    className: 'file',
+    template: _.template($('#file-template').html()),
     render: function() {
       this.$el.html(this.template(this.model))
       return this;
@@ -17,10 +17,10 @@ $(function() {
   })
   
   var files = new Files()
-  var TasksView = Backbone.View.extend({
+  var AppView = Backbone.View.extend({
     el: $('#content'),
     events: {
-      'submit #form-document': 'addTask',
+      'submit #form-file': 'downloadFile',
     },
     
     initialize: function() {
@@ -29,7 +29,7 @@ $(function() {
       files.fetch()
     },
     
-    addTask: function() {
+    downloadFile: function() {
       var url = $('input.url-field').val()
       this.clearForm()
       file = files.create({ 'url': url.toString() })
@@ -37,11 +37,11 @@ $(function() {
     },
     
     reset: function() {
-      this.$el.find('#documents').html('')
+      this.$el.find('#files').html('')
       var element = this.$el
       files.each(function(file) {
-        fileView = new TaskView({ 'model' : file.toJSON() })
-        element.find('#documents').append(fileView.render().$el)
+        fileView = new FileView({ 'model' : file.toJSON() })
+        element.find('#files').prepend(fileView.render().$el)
       })  
     },
     
@@ -52,11 +52,11 @@ $(function() {
   
   var Workspace = Backbone.Router.extend({
     routes: {
-     '': 'documents',
+     '': 'files',
     },
     
-    documents: function() {
-      view = new TasksView()
+    files: function() {
+      view = new AppView()
     }
   })
   

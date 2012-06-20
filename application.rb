@@ -4,31 +4,33 @@ require 'json'
 
 DataMapper.setup(:default, "sqlite3://#{Dir.pwd}/octopus.db")
 
-class Document
-  include DataMapper::Resource
-  property :id, Serial
-  property :url, String
-  property :status, Integer
-  property :created_at, DateTime
+module Octopus
+  class File
+    include DataMapper::Resource
+    property :id, Serial
+    property :url, String
+    property :status, Integer
+    property :created_at, DateTime
+  end
 end
 
 DataMapper.finalize
-Document.auto_upgrade!
+Octopus::File.auto_upgrade!
 
 get '/' do
   File.read(File.join('public', 'index.html'))
 end
 
-get '/documents' do
-  Document.all.to_json
+get '/files' do
+  Octopus::File.all.to_json
 end
 
-post '/documents' do
+post '/files' do
   data = JSON.parse request.body.read
-  Document.create :url => data['url'], :status => 0
+  Octopus::File.create :url => data['url'], :status => 0
 end
 
-delete '/documents/:id' do
-  Document.get(params[:id]).destroy
+delete '/files/:id' do
+  Octopus::File.get(params[:id]).destroy
   redirect to('/')
 end
