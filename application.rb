@@ -1,5 +1,6 @@
 require 'sinatra'
 require 'data_mapper'
+require 'json'
 
 DataMapper.setup(:default, "sqlite3://#{Dir.pwd}/octopus.db")
 
@@ -19,12 +20,12 @@ get '/' do
 end
 
 get '/documents' do
-  @documents = Document.all
+  Document.all.to_json
 end
 
 post '/documents' do
-  Document.create :url => params['url'], :status => 0
-  redirect to('/')
+  data = JSON.parse request.body.read
+  Document.create :url => data['url'], :status => 0
 end
 
 delete '/documents/:id' do

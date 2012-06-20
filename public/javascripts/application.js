@@ -1,4 +1,11 @@
 $(function() {
+  File = Backbone.Model.extend({})
+  
+  Files = Backbone.Collection.extend({
+    model: File,
+    url: '/documents'
+  })
+  
   var TaskView = Backbone.View.extend({
     tagName: 'div',
     className: 'document',
@@ -9,19 +16,33 @@ $(function() {
     }
   })
   
+  var files = new Files()
   var TasksView = Backbone.View.extend({
     el: $('#content'),
     events: {
       'submit #form-document': 'addTask',
     },
     
+    initialize: function() {
+      files.bind('add', this.reset, this)
+      files.bind('reset', this.reset, this)
+      files.fetch()
+    },
+    
     addTask: function() {
-      var id = $('.document').length + 1
       var url = $('input.url-field').val()
       this.clearForm()
-      var taskView = new TaskView({ 'model': {'id': id, 'url': url, 'status': '0%' } })
-      this.$el.find('#documents').append(taskView.render().$el)
+      file = files.create({ 'url': url.toString() })
       return false;
+    },
+    
+    reset: function() {
+      this.$el.find('#documents').html('')
+      var element = this.$el
+      files.each(function(file) {
+        fileView = new TaskView({ 'model' : file.toJSON() })
+        element.find('#documents').append(fileView.render().$el)
+      })  
     },
     
     clearForm: function() {
