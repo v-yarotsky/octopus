@@ -20,26 +20,27 @@ $(function() {
   var AppView = Backbone.View.extend({
     el: $('#content'),
     events: {
-      'submit #form-file': 'downloadFile',
+      'submit #form-file': 'addFile',
     },
     
     initialize: function() {
       this.container = this.$el.find('#files')
       this.form = this.$el.find('form#form-file')
       
-      files.bind('add', this.addFile, this)
+      files.bind('add', this.display, this)
       files.bind('reset', this.rebuild, this)
+      files.bind('remove', this.rebuild, this)
       files.fetch()
     },
     
-    downloadFile: function() {
+    addFile: function() {
       var url = this.form.find('input.url-field').val()
       this.clearForm()
       files.create({ 'url': url.toString() })
       return false;
     },
     
-    addFile: function(file) {
+    display: function(file) {
       view = new FileView({ 'model' : file.toJSON() })
       this.container.prepend(view.render().$el)
     },
@@ -47,7 +48,7 @@ $(function() {
     rebuild: function() {
       this.$el.find('#files').html('')
       element = this
-      files.each(function(file) { element.addFile(file) })
+      files.each(function(file) { element.display(file) })
     },
     
     clearForm: function() {
