@@ -24,25 +24,30 @@ $(function() {
     },
     
     initialize: function() {
-      files.bind('add', this.reset, this)
-      files.bind('reset', this.reset, this)
+      this.container = this.$el.find('#files')
+      this.form = this.$el.find('form#form-file')
+      
+      files.bind('add', this.addFile, this)
+      files.bind('reset', this.rebuild, this)
       files.fetch()
     },
     
     downloadFile: function() {
-      var url = $('input.url-field').val()
+      var url = this.form.find('input.url-field').val()
       this.clearForm()
-      file = files.create({ 'url': url.toString() })
+      files.create({ 'url': url.toString() })
       return false;
     },
     
-    reset: function() {
+    addFile: function(file) {
+      view = new FileView({ 'model' : file.toJSON() })
+      this.container.prepend(view.render().$el)
+    },
+    
+    rebuild: function() {
       this.$el.find('#files').html('')
-      var element = this.$el
-      files.each(function(file) {
-        fileView = new FileView({ 'model' : file.toJSON() })
-        element.find('#files').prepend(fileView.render().$el)
-      })  
+      element = this
+      files.each(function(file) { element.addFile(file) })
     },
     
     clearForm: function() {
