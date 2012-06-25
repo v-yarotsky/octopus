@@ -27,7 +27,8 @@ end
 
 post '/files' do
   data = JSON.parse request.body.read
-  Octopus::File.create :url => data['url'], :status => 0
+  file = Octopus::File.create :url => data['url'], :status => 0
+  `wget #{file.url} -P downloads`
 end
 
 delete '/files/:id' do
