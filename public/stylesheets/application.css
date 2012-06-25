@@ -47,3 +47,11 @@ body {
   font-weight: bold;
   color: green; 
 }
+
+#alert {
+  text-align: left;
+  padding: 5px 10px;
+  background: #FCC;
+  border: solid 1px red;
+  border-radius: 5px;
+}

@@ -1,5 +1,19 @@
 $(function() {
-  File = Backbone.Model.extend({})
+  var content = $('#content')
+  
+  File = Backbone.Model.extend({
+    initialize: function() {
+      this.bind('error', this.alert)
+    },
+    
+    validate: function() {
+      if(!/http:/.test(this.get('url'))) { return '<strong>url</strong> is not valid' }
+    },
+    
+    alert: function(model, error) {
+      content.prepend('<div id="alert">' + error + '</div>')
+    }
+  })
   
   Files = Backbone.Collection.extend({
     model: File,
@@ -18,7 +32,7 @@ $(function() {
   
   var files = new Files()
   var AppView = Backbone.View.extend({
-    el: $('#content'),
+    el: content,
     events: {
       'submit #form-file': 'addFile',
     },
@@ -36,6 +50,7 @@ $(function() {
     addFile: function() {
       var url = this.form.find('input.url-field').val()
       this.clearForm()
+      this.clearAlert()
       files.create({ 'url': url.toString() })
       return false;
     },
@@ -53,6 +68,10 @@ $(function() {
     
     clearForm: function() {
       $('input.url-field').val('')
+    },
+    
+    clearAlert: function() {  
+      $('#alert').remove()
     }
   })
   
